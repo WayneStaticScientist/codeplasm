@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:codeplasm/db/db_helper.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -28,5 +29,11 @@ class ProjectStorage {
     final path = await getProjectDirectory;
     final file = File('$path/${project.replaceAll(" ", "")}/$index');
     file.writeAsString(data);
+  }
+
+  Future<String> projectFinilizedPath(Project project) async {
+    return (Directory(
+      "${await getProjectDirectory}/${project.name.replaceAll(" ", "")}",
+    )).path;
   }
 }

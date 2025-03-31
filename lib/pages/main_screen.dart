@@ -3,12 +3,12 @@ import 'package:codeplasm/db/db_helper.dart';
 import 'package:codeplasm/db/db_init.dart';
 import 'package:codeplasm/pages/project_screen.dart';
 import 'package:codeplasm/utils/storage_utils.dart';
+import 'package:codeplasm/utils/utils.dart';
 import 'package:codeplasm/widgets/decorated_cards.dart';
 import 'package:codeplasm/widgets/decorated_textfields.dart';
 import 'package:codeplasm/widgets/drop_downs.dart';
 import 'package:codeplasm/widgets/text_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -174,19 +174,13 @@ class _MainScreenState extends State<MainScreen> {
                       final projectTitle = _projectNameController.text;
                       final preferences = await SharedPreferences.getInstance();
                       if (projectTitle.replaceAll(" ", "").isEmpty) {
-                        Fluttertoast.showToast(
-                          msg: "The project title shouldnt be empty",
-                        );
+                        Utils.showToast("The project title shouldnt be empty");
                       }
                       if (projectRoot.replaceAll(" ", "").isEmpty) {
-                        Fluttertoast.showToast(
-                          msg: "The project root shouldnt be empty",
-                        );
+                        Utils.showToast("The project root shouldnt be empty");
                       }
                       if (await _projectsDb.projectExists(projectTitle)) {
-                        Fluttertoast.showToast(
-                          msg: "Project Already Exists Change Name",
-                        );
+                        Utils.showToast("Project Already Exists Change Name");
                         return;
                       }
                       final projectStorage = ProjectStorage();
@@ -205,7 +199,10 @@ class _MainScreenState extends State<MainScreen> {
                         preferences.setString("name", projectTitle);
                         Get.to(ProjectScreen(project: project));
                       } catch (e) {
-                        Fluttertoast.showToast(msg: e.toString());
+                        Utils.showToast(
+                          "failed to save project $e",
+                          error: true,
+                        );
                       }
                     },
                     icon: const Icon(Icons.add),

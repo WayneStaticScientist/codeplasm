@@ -2,14 +2,14 @@ import 'package:codeplasm/db/db_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ProjectsDb {
-  static const String dbName = 'projects.db';
-  static const String tableName = 'projects';
+  static Database? _database;
   static const String columnId = 'id';
   static const String columnName = 'name';
   static const String columnRoot = 'root';
+  static const String dbName = 'projects.db';
+  static const String tableName = 'projects';
   static const String columnCreatedAt = 'dateTime';
-  static Database? _database;
-  // Create the database and the table
+
   Future<Database> init() async {
     if (ProjectsDb._database != null) return ProjectsDb._database!;
     return await openDatabase(
@@ -21,7 +21,7 @@ class ProjectsDb {
             $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
             $columnName TEXT NOT NULL,
             $columnRoot TEXT NOT NULL,
-            $columnCreatedAt INTEGER NOT NULL,
+            $columnCreatedAt INTEGER NOT NULL
           )
           ''');
       },
@@ -47,5 +47,15 @@ class ProjectsDb {
       whereArgs: [project],
     );
     return query.isNotEmpty;
+  }
+
+  Future<Project?> getProject(String project) async {
+    final db = await init();
+    final query = await db.query(
+      tableName,
+      where: "$columnName = ?",
+      whereArgs: [project],
+    );
+    return query.isNotEmpty ? Project.fromMap(query.first) : null;
   }
 }

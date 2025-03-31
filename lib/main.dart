@@ -1,21 +1,25 @@
-import 'package:codeplasm/pages/main_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
+import 'package:codeplasm/pages/loader_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final preferences = await SharedPreferences.getInstance();
+  final themeMode = preferences.getBool('dark') ?? true;
   runApp(
     GetMaterialApp(
-      home: MainScreen(),
+      home: LoaderScreen(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: Colors.black,
         primaryColor: Colors.pink,
         colorScheme: const ColorScheme.dark(
-          primary: Colors.pink,
-          secondary: Colors.pink,
-          surface: Colors.black,
           error: Colors.red,
+          primary: Colors.pink,
+          surface: Colors.black,
+          secondary: Colors.pink,
         ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.black,
@@ -30,7 +34,7 @@ void main() {
       defaultTransition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 300),
       popGesture: true,
-      themeMode: ThemeMode.dark,
+      themeMode: themeMode ? ThemeMode.dark : ThemeMode.light,
       opaqueRoute: true,
     ),
   );
